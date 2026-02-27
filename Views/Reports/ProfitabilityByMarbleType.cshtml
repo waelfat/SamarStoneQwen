@@ -1,0 +1,154 @@
+﻿@using SamarStoneQwen.Controllers
+<!-- Views/Reports/ProfitabilityByMarbleType.cshtml -->
+@model IEnumerable<ProfitabilityReportItem>
+@{
+    ViewData["Title"] = "Profitability by Marble Type";
+}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="fas fa-chart-line me-2"></i>Profitability by Marble Type</h1>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th><i class="fas fa-gem me-1"></i>Marble Type</th>
+                <th><i class="fas fa-shopping-cart me-1"></i>Sales Count</th>
+                <th><i class="fas fa-receipt me-1"></i>Total Revenue (EGP)</th>
+                <th><i class="fas fa-money-bill-wave me-1"></i>Total Cost (EGP)</th>
+                <th><i class="fas fa-chart-line me-1"></i>Total Profit (EGP)</th>
+                <th><i class="fas fa-percentage me-1"></i>Profit Margin (%)</th>
+                <th><i class="fas fa-tag me-1"></i>Avg. Selling Price (EGP)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.OrderByDescending(m => m.TotalProfit))
+            {
+                <tr>
+                    <td><strong>@item.MarbleType</strong></td>
+                    <td><i class="fas fa-shopping-cart text-info me-1"></i> @item.SalesCount</td>
+                    <td><i class="fas fa-receipt text-success me-1"></i> EGP @item.TotalRevenue.ToString("N2")</td>
+                    <td><i class="fas fa-money-bill-wave text-danger me-1"></i> EGP @item.TotalCost.ToString("N2")</td>
+                    <td><i class="fas fa-chart-line text-success me-1"></i> EGP @item.TotalProfit.ToString("N2")</td>
+                    <td>
+                        <span class="badge @(item.ProfitMargin >= 20 ? "bg-success" : 
+                              item.ProfitMargin >= 10 ? "bg-info" : 
+                              item.ProfitMargin >= 5 ? "bg-warning" : "bg-danger")">
+                            @item.ProfitMargin.ToString("N2")%
+                        </span>
+                    </td>
+                    <td><i class="fas fa-tag text-primary me-1"></i> EGP @item.AverageSellingPrice.ToString("N2")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="row mt-4">
+    <div class="col-lg-8">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-chart-bar me-2"></i>Top 5 Most Profitable Types</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Type</th>
+                                <th>Profit (EGP)</th>
+                                <th>Share (%)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                var top5 = Model.OrderByDescending(m => m.TotalProfit).Take(5).ToList();
+                                var totalProfit = Model.Sum(m => m.TotalProfit);
+                            }
+                            @for (int i = 0; i < top5.Count; i++)
+                            {
+                                <tr>
+                                    <td><span class="badge bg-primary">@(i + 1)</span></td>
+                                    <td><strong>@top5[i].MarbleType</strong></td>
+                                    <td>EGP @top5[i].TotalProfit.ToString("N2")</td>
+                                    <td>
+                                        @if (totalProfit > 0)
+                                        {
+                                            <span>@Math.Round(top5[i].TotalProfit / totalProfit * 100, 2)%</span>
+                                        }
+                                        else
+                                        {
+                                            <span>0%</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-chart-pie me-2"></i>Profit Distribution</h6>
+            </div>
+            <div class="card-body">
+                <div class="chart-pie pt-4">
+                    <canvas id="profitDistributionChart"></canvas>
+                </div>
+                <div class="mt-4 text-center small">
+                    <span class="mr-2">
+                        <i class="fas fa-circle text-success"></i> Top 3 Types
+                    </span>
+                    <span class="mr-2">
+                        <i class="fas fa-circle text-info"></i> Others
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Profit distribution chart
+        const profitCtx = document.getElementById('profitDistributionChart').getContext('2d');
+        
+        // Prepare data for top 3 vs others
+        const orderedItems = @Html.Raw(Json.Serialize(Model.OrderByDescending(m => m.TotalProfit).ToList()));
+        const top3Total = orderedItems.slice(0, 3).reduce((sum, item) => sum + item.totalProfit, 0);
+        const othersTotal = orderedItems.slice(3).reduce((sum, item) => sum + item.totalProfit, 0);
+        
+        new Chart(profitCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Top 3 Types', 'Others'],
+                datasets: [{
+                    data: [top3Total, othersTotal],
+                    backgroundColor: [
+                        'rgba(40, 167, 69, 0.8)',
+                        'rgba(108, 117, 125, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(40, 167, 69, 1)',
+                        'rgba(108, 117, 125, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    });
+</script>

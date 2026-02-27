@@ -1,0 +1,88 @@
+﻿<!-- Views/Containers/UploadSlabFile.cshtml -->
+@{
+    ViewData["Title"] = "Upload Slab File";
+}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="fas fa-file-import me-2"></i>Upload Slab File</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-upload me-2"></i>Upload Supplier Excel File</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="UploadSlabFile" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="containerId" value="@ViewBag.Container.Id" />
+                    
+                    <div class="alert alert-info">
+                        <h6><i class="fas fa-info-circle me-2"></i>Container Information</h6>
+                        <p class="mb-1"><strong>Container:</strong> @ViewBag.Container.ContainerNumber</p>
+                        <p class="mb-0"><strong>Purchase Order:</strong> @ViewBag.Container.PurchaseOrder.Supplier.Name</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="file" class="form-label"><i class="fas fa-file-excel me-1"></i>Excel File (.xlsx)</label>
+                        <input type="file" class="form-control" id="file" name="file" accept=".xlsx" required>
+                        <div class="form-text">
+                            Upload the supplier's Excel file containing slab details.
+                        </div>
+                    </div>
+
+                    <div class="alert alert-warning">
+                        <h6><i class="fas fa-exclamation-triangle me-2"></i>Required Columns</h6>
+                        <p class="mb-1">The Excel file must contain the following columns:</p>
+                        <ul class="mb-0">
+                            <li><code>SlabNumber</code> - Unique identifier for the slab</li>
+                            <li><code>MarbleType</code> - Type of marble (e.g., Carrara White)</li>
+                            <li><code>Thickness</code> - Thickness in cm</li>
+                            <li><code>Width</code> - Width in cm</li>
+                            <li><code>Length</code> - Length in cm</li>
+                            <li><code>QualityGrade</code> - Quality grade (A, B, C)</li>
+                            <li><code>Color</code> - Color of the marble</li>
+                            <li><code>OriginCountry</code> - Country of origin</li>
+                            <li><code>CostPerSqM</code> - Cost per square meter in USD</li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-upload me-1"></i> Upload and Process
+                        </button>
+                        <a asp-action="Details" asp-route-id="@ViewBag.Container.Id" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-download me-2"></i>Sample File</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">
+                    Download a sample Excel file to understand the required format.
+                </p>
+                <a href="#" class="btn btn-outline-primary btn-sm">
+                    <i class="fas fa-download me-1"></i> Download Sample
+                </a>
+            </div>
+        </div>
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5><i class="fas fa-info-circle me-2"></i>Processing Info</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted small">
+                    After upload, the system will automatically process the file and create slabs in the inventory. 
+                    Each slab will be assigned to this container and marked as available for sale.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

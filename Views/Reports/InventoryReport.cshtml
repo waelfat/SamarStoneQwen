@@ -1,0 +1,177 @@
+﻿@using SamarStoneQwen.Controllers
+<!-- Views/Reports/InventoryReport.cshtml -->
+@model InventoryReportViewModel
+@{
+    ViewData["Title"] = "Inventory Report";
+}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="fas fa-warehouse me-2"></i>Inventory Report</h1>
+</div>
+
+<div class="row mb-4">
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Total Slabs</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalSlabs</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-th-large fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            Available</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.AvailableSlabs</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                            Total Area</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalArea.ToString("N2") sqm</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-ruler-combined fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            Total Value (USD)</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">$@Model.TotalValueUSD.ToString("N2")</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-th-large me-2"></i>Marble Types Breakdown</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Marble Type</th>
+                                <th>Count</th>
+                                <th>Total Area (sqm)</th>
+                                <th>Total Value (USD)</th>
+                                <th>Available</th>
+                                <th>Sold</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (dynamic item in Model.MarbleTypeBreakdown)
+                            {
+                                <tr>
+                                    <td><strong>@item.Type</strong></td>
+                                    <td>@item.Count</td>
+                                    <td>@item.TotalArea.ToString("N2")</td>
+                                    <td>$@item.TotalValue.ToString("N2")</td>
+                                    <td>@item.Available</td>
+                                    <td>@item.Sold</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-chart-pie me-2"></i>Inventory Status</h6>
+            </div>
+            <div class="card-body">
+                <div class="chart-pie pt-4">
+                    <canvas id="inventoryChart"></canvas>
+                </div>
+                <div class="mt-4 text-center small">
+                    <span class="mr-2">
+                        <i class="fas fa-circle text-success"></i> Available
+                    </span>
+                    <span class="mr-2">
+                        <i class="fas fa-circle text-danger"></i> Sold
+                    </span>
+                    <span class="mr-2">
+                        <i class="fas fa-circle text-warning"></i> Reserved
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('inventoryChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Available', 'Sold', 'Reserved'],
+                datasets: [{
+                    data: [@Model.AvailableSlabs, @Model.SoldSlabs, @Model.ReservedSlabs],
+                    backgroundColor: [
+                        'rgba(40, 167, 69, 0.8)',
+                        'rgba(220, 53, 69, 0.8)',
+                        'rgba(255, 193, 7, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(40, 167, 69, 1)',
+                        'rgba(220, 53, 69, 1)',
+                        'rgba(255, 193, 7, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    });
+</script>

@@ -1,0 +1,148 @@
+﻿@using SamarStoneQwen.Controllers
+<!-- Views/Home/Index.cshtml -->
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</h1>
+</div>
+
+<div class="row mb-4">
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Total Purchase Orders</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalPurchaseOrders</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-file-invoice fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            Total Containers</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalContainers</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-box fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                            Total Slabs</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalSlabs</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-th-large fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            Total Revenue</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">EGP @Model.TotalRevenue.ToString("N2")</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-money-bill-wave fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-chart-bar me-2"></i>Recent Activities</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Activity</th>
+                                <th>Date</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>New Purchase Order</td>
+                                <td>Today</td>
+                                <td>$15,000</td>
+                                <td><span class="badge bg-info">Pending</span></td>
+                            </tr>
+                            <tr>
+                                <td>Container Arrival</td>
+                                <td>Yesterday</td>
+                                <td>1 Container</td>
+                                <td><span class="badge bg-success">Arrived</span></td>
+                            </tr>
+                            <tr>
+                                <td>Sale Completed</td>
+                                <td>2 Days Ago</td>
+                                <td>EGP 50,000</td>
+                                <td><span class="badge bg-success">Completed</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-bolt me-2"></i>Quick Actions</h6>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a asp-controller="PurchaseOrders" asp-action="Create" class="btn btn-primary btn-sm mb-2">
+                        <i class="fas fa-plus-circle me-1"></i> New Purchase Order
+                    </a>
+                    <a asp-controller="Customers" asp-action="Create" class="btn btn-success btn-sm mb-2">
+                        <i class="fas fa-user-plus me-1"></i> Add Customer
+                    </a>
+                    <a asp-controller="Sales" asp-action="Create" class="btn btn-warning btn-sm mb-2">
+                        <i class="fas fa-tag me-1"></i> Create Sale
+                    </a>
+                    <a asp-controller="Reports" asp-action="InventoryReport" class="btn btn-info btn-sm">
+                        <i class="fas fa-chart-line me-1"></i> View Reports
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

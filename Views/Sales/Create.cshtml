@@ -1,0 +1,366 @@
+﻿<!-- Views/Sales/Create.cshtml (Optimized Version) -->
+@model Sale
+@{
+    ViewData["Title"] = "Create Sale";
+}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="fas fa-tag me-2"></i>Create Sale</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-shopping-cart me-2"></i>Sale Information</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" method="post" id="saleForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label for="CustomerId" class="form-label"><i class="fas fa-user me-1"></i>Customer</label>
+                                <select name="CustomerId" class="form-control" required>
+                                    <option value="">-- Select Customer --</option>
+                                    @foreach (var customer in ViewBag.Customers as IEnumerable<Customer>)
+                                    {
+                                        <option value="@customer.Id">@customer.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <h6><i class="fas fa-list me-2"></i>Sale Requirements</h6>
+                        </div>
+                        <div class="card-body">
+                            <div id="saleRequirements">
+                                <div class="requirement-item mb-3 p-3 border rounded bg-light">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <label class="form-label">Marble Type</label>
+                                            <select name="marbleTypes[]" class="form-control marble-type-select" required>
+                                                <option value="">-- Select Type --</option>
+                                                @foreach (var type in ViewBag.AvailableMarbleTypes as IEnumerable<string>)
+                                                {
+                                                    <option value="@type">@type</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label class="form-label">Width (cm)</label>
+                                            <input type="number" name="widths[]" class="form-control dimension-input" step="0.1" min="0" placeholder="120" required />
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label class="form-label">Length (cm)</label>
+                                            <input type="number" name="lengths[]" class="form-control dimension-input" step="0.1" min="0" placeholder="240" required />
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label class="form-label">Thickness (cm)</label>
+                                            <input type="number" name="thicknesses[]" class="form-control dimension-input" step="0.1" min="0" placeholder="2.0" required />
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label class="form-label">Quantity</label>
+                                            <input type="number" name="quantities[]" class="form-control quantity-input" step="1" min="1" placeholder="1" required />
+                                        </div>
+                                        <div class="col-md-1 d-flex align-items-end">
+                                            <button type="button" class="btn btn-danger btn-sm remove-item" title="Remove Requirement">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-md-4">
+                                            <label class="form-label">Selling Price per Unit (EGP)</label>
+                                            <input type="number" name="unitPrices[]" class="form-control unit-price-input" step="0.01" min="0" placeholder="5000" required />
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">Expected Total Area (sqm)</label>
+                                            <input type="number" name="expectedAreas[]" class="form-control expected-area-input" step="0.01" min="0" placeholder="2.00" readonly />
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">Total Price (EGP)</label>
+                                            <input type="number" name="totalPrices[]" class="form-control total-price-input" step="0.01" min="0" placeholder="5000" readonly />
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2 slab-status" style="display: none;">
+                                        <div class="col-md-12">
+                                            <small class="text-success">
+                                                <i class="fas fa-check-circle me-1"></i>
+                                                <span class="status-text"></span>
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-outline-secondary btn-sm" id="add-requirement">
+                                <i class="fas fa-plus me-1"></i>Add Another Requirement
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <h6><i class="fas fa-receipt me-2"></i>Sale Summary</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Total Requirements:</label>
+                                        <input type="text" class="form-control" id="total-requirements" readonly value="1">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Total Price (EGP):</label>
+                                        <input type="text" class="form-control" id="total-price" readonly value="0.00">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Expected Total Area (sqm):</label>
+                                        <input type="text" class="form-control" id="expected-total-area" readonly value="0.00">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Estimated Profit (EGP):</label>
+                                        <input type="text" class="form-control" id="estimated-profit" readonly value="0.00">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info mt-3" id="processing-alert" style="display: none;">
+                        <i class="fas fa-spinner fa-spin me-2"></i> Processing your sale requirements...
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <button type="submit" class="btn btn-success" id="submit-btn">
+                            <i class="fas fa-save me-1"></i> Create Sale
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i> Back to List
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-info-circle me-2"></i>Instructions</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">
+                    <i class="fas fa-lightbulb me-2 text-warning"></i>
+                    Enter the marble type and exact dimensions needed. The system will automatically find and allocate the best available slabs using FIFO principle.
+                </p>
+                <p class="text-muted">
+                    <i class="fas fa-sort-amount-up me-2 text-info"></i>
+                    FIFO (First In, First Out) ensures oldest inventory is allocated first.
+                </p>
+                <p class="text-muted">
+                    <i class="fas fa-box me-2 text-success"></i>
+                    Available marble types: <strong>@((ViewBag.AvailableMarbleTypes as IEnumerable<string>)?.Count() ?? 0)</strong>
+                </p>
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5><i class="fas fa-check-circle me-2"></i>How It Works</h5>
+            </div>
+            <div class="card-body">
+                <ol class="text-muted">
+                    <li>Enter marble type and exact dimensions</li>
+                    <li>Specify quantity needed</li>
+                    <li>System finds best matching slabs</li>
+                    <li>FIFO principle ensures efficient allocation</li>
+                    <li>Submit to create the sale</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .requirement-item {
+        background-color: #f8f9fa;
+    }
+    .slab-status {
+        margin-top: 0.5rem;
+        padding-top: 0.5rem;
+        border-top: 1px dashed #ddd;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const addRequirementBtn = document.getElementById('add-requirement');
+        const saleRequirementsContainer = document.getElementById('saleRequirements');
+        
+        // Calculate expected area and total price when dimensions change
+        function updateCalculatedFields(item) {
+            const width = parseFloat(item.querySelector('[name*="widths"]').value) || 0;
+            const length = parseFloat(item.querySelector('[name*="lengths"]').value) || 0;
+            const quantity = parseInt(item.querySelector('[name*="quantities"]').value) || 0;
+            const unitPrice = parseFloat(item.querySelector('[name*="unitPrices"]').value) || 0;
+            
+            const singleArea = (width * length) / 10000; // Convert cm² to m²
+            const expectedArea = singleArea * quantity;
+            const totalPrice = unitPrice * quantity;
+            
+            item.querySelector('.expected-area-input').value = expectedArea.toFixed(4);
+            item.querySelector('.total-price-input').value = totalPrice.toFixed(2);
+            
+            updateSummary();
+        }
+        
+        // Update summary
+        function updateSummary() {
+            let totalRequirements = 0;
+            let totalExpectedArea = 0;
+            let totalPrice = 0;
+            
+            document.querySelectorAll('.requirement-item').forEach(item => {
+                totalRequirements++;
+                
+                const expectedArea = parseFloat(item.querySelector('.expected-area-input').value) || 0;
+                const totalPriceItem = parseFloat(item.querySelector('.total-price-input').value) || 0;
+                
+                totalExpectedArea += expectedArea;
+                totalPrice += totalPriceItem;
+            });
+            
+            document.getElementById('total-requirements').value = totalRequirements;
+            document.getElementById('expected-total-area').value = totalExpectedArea.toFixed(4);
+            document.getElementById('total-price').value = totalPrice.toFixed(2);
+            
+            // Calculate estimated profit (simplified calculation)
+            const estimatedProfit = totalPrice * 0.15; // Assuming 15% profit margin
+            document.getElementById('estimated-profit').value = estimatedProfit.toFixed(2);
+        }
+        
+        // Add requirement functionality
+        addRequirementBtn.addEventListener('click', function() {
+            const newItem = document.createElement('div');
+            newItem.className = 'requirement-item mb-3 p-3 border rounded bg-light';
+            newItem.innerHTML = `
+                <div class="row">
+                    <div class="col-md-3">
+                        <label class="form-label">Marble Type</label>
+                        <select name="marbleTypes[]" class="form-control marble-type-select" required>
+                            <option value="">-- Select Type --</option>
+                            @foreach (var type in ViewBag.AvailableMarbleTypes as IEnumerable<string>)
+                            {
+                                <option value="@type">@type</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Width (cm)</label>
+                        <input type="number" name="widths[]" class="form-control dimension-input" step="0.1" min="0" placeholder="120" required />
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Length (cm)</label>
+                        <input type="number" name="lengths[]" class="form-control dimension-input" step="0.1" min="0" placeholder="240" required />
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Thickness (cm)</label>
+                        <input type="number" name="thicknesses[]" class="form-control dimension-input" step="0.1" min="0" placeholder="2.0" required />
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Quantity</label>
+                        <input type="number" name="quantities[]" class="form-control quantity-input" step="1" min="1" placeholder="1" required />
+                    </div>
+                    <div class="col-md-1 d-flex align-items-end">
+                        <button type="button" class="btn btn-danger btn-sm remove-item" title="Remove Requirement">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-md-4">
+                        <label class="form-label">Selling Price per Unit (EGP)</label>
+                        <input type="number" name="unitPrices[]" class="form-control unit-price-input" step="0.01" min="0" placeholder="5000" required />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Expected Total Area (sqm)</label>
+                        <input type="number" name="expectedAreas[]" class="form-control expected-area-input" step="0.01" min="0" placeholder="2.00" readonly />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Total Price (EGP)</label>
+                        <input type="number" name="totalPrices[]" class="form-control total-price-input" step="0.01" min="0" placeholder="5000" readonly />
+                    </div>
+                </div>
+                <div class="row mt-2 slab-status" style="display: none;">
+                    <div class="col-md-12">
+                        <small class="text-success">
+                            <i class="fas fa-check-circle me-1"></i>
+                            <span class="status-text"></span>
+                        </small>
+                    </div>
+                </div>
+            `;
+            saleRequirementsContainer.appendChild(newItem);
+            
+            // Add event listeners to new inputs
+            newItem.querySelector('.dimension-input').addEventListener('input', function() {
+                updateCalculatedFields(newItem);
+            });
+            newItem.querySelector('.quantity-input').addEventListener('input', function() {
+                updateCalculatedFields(newItem);
+            });
+            newItem.querySelector('.unit-price-input').addEventListener('input', function() {
+                updateCalculatedFields(newItem);
+            });
+            
+            updateSummary();
+        });
+        
+        // Event delegation for remove item
+        saleRequirementsContainer.addEventListener('click', function(e) {
+            if (e.target.closest('.remove-item')) {
+                const item = e.target.closest('.requirement-item');
+                if (saleRequirementsContainer.children.length > 1) {
+                    item.remove();
+                    updateSummary();
+                } else {
+                    alert('At least one requirement must remain.');
+                }
+            }
+        });
+        
+        // Event delegation for dimension changes
+        saleRequirementsContainer.addEventListener('input', function(e) {
+            if (e.target.classList.contains('dimension-input') || 
+                e.target.classList.contains('quantity-input') || 
+                e.target.classList.contains('unit-price-input')) {
+                const item = e.target.closest('.requirement-item');
+                updateCalculatedFields(item);
+            }
+        });
+        
+        // Form submission handling
+        document.getElementById('saleForm').addEventListener('submit', function(e) {
+            const submitBtn = document.getElementById('submit-btn');
+            const processingAlert = document.getElementById('processing-alert');
+            
+            // Show processing state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Processing...';
+            processingAlert.style.display = 'block';
+        });
+        
+        // Initialize summary
+        updateSummary();
+    });
+</script>

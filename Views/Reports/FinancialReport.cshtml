@@ -1,0 +1,260 @@
+﻿@using SamarStoneQwen.Controllers
+<!-- Views/Reports/FinancialReport.cshtml -->
+@model FinancialReportViewModel
+@{
+    ViewData["Title"] = "Financial Report";
+}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="fas fa-money-bill-wave me-2"></i>Financial Report</h1>
+</div>
+
+<div class="row mb-4">
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Total Revenue</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">EGP @Model.TotalRevenue.ToString("N2")</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            Total Profit</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">EGP @Model.TotalProfit.ToString("N2")</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-chart-line fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                            Total Expenses</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">$@Model.TotalExpenses.ToString("N2")</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-credit-card fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            Profit Margin</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            @if (Model.TotalRevenue > 0)
+                            {
+                                @(Math.Round(Model.TotalProfit / Model.TotalRevenue * 100, 2).ToString("N2") + "%")
+                            }
+                            else
+                            {
+                                @:0%
+                            }
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-percentage fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-chart-bar me-2"></i>Financial Overview</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Metric</th>
+                                <th>Amount</th>
+                                <th>Currency</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><i class="fas fa-receipt text-primary me-2"></i> Total Revenue</td>
+                                <td>EGP @Model.TotalRevenue.ToString("N2")</td>
+                                <td>EGP</td>
+                            </tr>
+                            <tr>
+                                <td><i class="fas fa-dollar-sign text-success me-2"></i> Total Cost (USD)</td>
+                                <td>$@Model.TotalCostUSD.ToString("N2")</td>
+                                <td>USD</td>
+                            </tr>
+                            <tr>
+                                <td><i class="fas fa-dollar-sign text-info me-2"></i> Total Cost (EGP)</td>
+                                <td>EGP @Model.TotalCostEGP.ToString("N2")</td>
+                                <td>EGP</td>
+                            </tr>
+                            <tr>
+                                <td><i class="fas fa-chart-line text-success me-2"></i> Total Profit</td>
+                                <td>EGP @Model.TotalProfit.ToString("N2")</td>
+                                <td>EGP</td>
+                            </tr>
+                            <tr>
+                                <td><i class="fas fa-credit-card text-warning me-2"></i> Total Expenses</td>
+                                <td>$@Model.TotalExpenses.ToString("N2")</td>
+                                <td>USD</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-chart-pie me-2"></i>Financial Breakdown</h6>
+            </div>
+            <div class="card-body">
+                <div class="chart-pie pt-4">
+                    <canvas id="financialChart"></canvas>
+                </div>
+                <div class="mt-4 text-center small">
+                    <span class="mr-2">
+                        <i class="fas fa-circle text-success"></i> Profit
+                    </span>
+                    <span class="mr-2">
+                        <i class="fas fa-circle text-danger"></i> Costs
+                    </span>
+                    <span class="mr-2">
+                        <i class="fas fa-circle text-warning"></i> Expenses
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-shopping-cart me-2"></i>Sales Summary</h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-6 text-center">
+                        <h3 class="text-info">@Model.TotalSalesCount</h3>
+                        <p class="text-muted">Total Sales</p>
+                    </div>
+                    <div class="col-6 text-center">
+                        <h3 class="text-success">@Model.TotalSaleItems</h3>
+                        <p class="text-muted">Total Items</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-calculator me-2"></i>Key Metrics</h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-6">
+                        <p><strong>Avg. Sale Value:</strong></p>
+                        <p class="text-success">
+                            @if (Model.TotalSalesCount > 0)
+                            {
+                                <span>EGP @(Math.Round(Model.TotalRevenue / Model.TotalSalesCount, 2).ToString("N2"))</span>
+                            }
+                            else
+                            {
+                                <span>EGP 0.00</span>
+                            }
+                        </p>
+                    </div>
+                    <div class="col-6">
+                        <p><strong>Avg. Profit per Sale:</strong></p>
+                        <p class="text-success">
+                            @if (Model.TotalSalesCount > 0)
+                            {
+                                <span>EGP @(Math.Round(Model.TotalProfit / Model.TotalSalesCount, 2).ToString("N2"))</span>
+                            }
+                            else
+                            {
+                                <span>EGP 0.00</span>
+                            }
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('financialChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Profit', 'Costs', 'Expenses'],
+                datasets: [{
+                    data: [
+                        @Model.TotalProfit,
+                        @Model.TotalCostEGP,
+                        @Model.TotalExpenses * 15.7 // Convert USD to EGP for comparison
+                    ],
+                    backgroundColor: [
+                        'rgba(40, 167, 69, 0.8)', // Profit - Green
+                        'rgba(220, 53, 69, 0.8)', // Costs - Red
+                        'rgba(255, 193, 7, 0.8)'  // Expenses - Yellow
+                    ],
+                    borderColor: [
+                        'rgba(40, 167, 69, 1)',
+                        'rgba(220, 53, 69, 1)',
+                        'rgba(255, 193, 7, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    });
+</script>

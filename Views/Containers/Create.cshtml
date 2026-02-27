@@ -1,0 +1,131 @@
+﻿<!-- Views/Containers/Create.cshtml (Updated with Order Number) -->
+@model Container
+@{
+    ViewData["Title"] = "Create Container";
+}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="fas fa-box me-2"></i>Create Container</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-box-open me-2"></i>Container Details</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="PurchaseOrderId" class="form-label"><i class="fas fa-file-invoice me-1"></i>Purchase Order</label>
+                                <select asp-for="PurchaseOrderId" class="form-control"  required>
+                                    <option value="">-- Select Purchase Order --</option>
+                                    @foreach (var po in ViewBag.PurchaseOrders)
+                                    {
+                                        <option value="@po.Id">@po.Supplier.Name - @po.OrderDate.ToString("yyyy-MM-dd")</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="PurchaseOrderId" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="ContainerNumber" class="form-label"><i class="fas fa-hashtag me-1"></i>Container Number</label>
+                                <input asp-for="ContainerNumber" class="form-control" placeholder="Enter container number (e.g., MSCU1234567)" required />
+                                <span asp-validation-for="ContainerNumber" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="SizeInFeet" class="form-label"><i class="fas fa-ruler-combined me-1"></i>Container Size (ft)</label>
+                                <select asp-for="SizeInFeet" class="form-control" required>
+                                    <option value="">-- Select Size --</option>
+                                    <option value="20">20 ft</option>
+                                    <option value="40">40 ft</option>
+                                    <option value="45">45 ft</option>
+                                </select>
+                                <span asp-validation-for="SizeInFeet" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="WeightInTons" class="form-label"><i class="fas fa-weight-hanging me-1"></i>Weight (tons)</label>
+                                <input asp-for="WeightInTons" type="number" step="0.01" class="form-control" placeholder="Enter weight in tons" />
+                                <span asp-validation-for="WeightInTons" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="Status" class="form-label"><i class="fas fa-flag me-1"></i>Status</label>
+                                <select asp-for="Status" class="form-control" required>
+                                    <option value="Ordered">Ordered</option>
+                                    <option value="Shipped">Shipped</option>
+                                    <option value="Arrived">Arrived</option>
+                                    <option value="Unloaded">Unloaded</option>
+                                </select>
+                                <span asp-validation-for="Status" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="ArrivalDate" class="form-label"><i class="fas fa-calendar me-1"></i>Arrival Date</label>
+                                <input asp-for="ArrivalDate" type="date" class="form-control" />
+                                <span asp-validation-for="ArrivalDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Notes" class="form-label"><i class="fas fa-sticky-note me-1"></i>Notes</label>
+                        <textarea asp-for="Notes" class="form-control" rows="3" placeholder="Additional notes about the container"></textarea>
+                        <span asp-validation-for="Notes" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i> Create Container
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i> Back to List
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-info-circle me-2"></i>Container Information</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">
+                    <i class="fas fa-lightbulb me-2 text-warning"></i>
+                    Enter the container details including size, weight, and arrival information.
+                </p>
+                <div class="alert alert-info">
+                    <h6><i class="fas fa-shipping-fast me-2"></i>Container Sizes</h6>
+                    <ul class="mb-0">
+                        <li><strong>20 ft:</strong> Standard container</li>
+                        <li><strong>40 ft:</strong> Large container</li>
+                        <li><strong>45 ft:</strong> High cube container</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

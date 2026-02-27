@@ -1,0 +1,98 @@
+﻿<!-- Views/Shared/_Layout.cshtml (Updated menu) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Samar Stone Qwen</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-primary border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="fas fa-gem me-2"></i>Samar Stone Qwen
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">
+                                <i class="fas fa-home me-1"></i>Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-cubes me-1"></i>Operations
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" asp-controller="Suppliers" asp-action="Index"><i class="fas fa-building me-2"></i>Suppliers</a></li>
+                                <li><a class="dropdown-item" asp-controller="MarbleTypes" asp-action="Index"><i class="fas fa-gem me-2"></i>Marble Types</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" asp-controller="PurchaseOrders" asp-action="Index"><i class="fas fa-file-invoice me-2"></i>Purchase Orders</a></li>
+                                <li><a class="dropdown-item" asp-controller="Containers" asp-action="Index"><i class="fas fa-box me-2"></i>Containers</a></li>
+                                <li><a class="dropdown-item" asp-controller="Slabs" asp-action="Index"><i class="fas fa-th-large me-2"></i>Slabs</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-shopping-cart me-1"></i>Sales
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" asp-controller="Customers" asp-action="Index"><i class="fas fa-users me-2"></i>Customers</a></li>
+                                <li><a class="dropdown-item" asp-controller="Sales" asp-action="Index"><i class="fas fa-tags me-2"></i>Sales</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-chart-bar me-1"></i>Reports
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" asp-controller="Reports" asp-action="InventoryReport"><i class="fas fa-warehouse me-2"></i>Inventory Report</a></li>
+                                <li><a class="dropdown-item" asp-controller="Reports" asp-action="FinancialReport"><i class="fas fa-money-bill-wave me-2"></i>Financial Report</a></li>
+                                <li><a class="dropdown-item" asp-controller="Reports" asp-action="ProfitabilityByMarbleType"><i class="fas fa-chart-line me-2"></i>Profitability by Type</a></li>
+                                <li><a class="dropdown-item" asp-controller="Reports" asp-action="SalesByCustomer"><i class="fas fa-chart-pie me-2"></i>Sales by Customer</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>@TempData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer bg-light text-muted">
+        <div class="container text-center">
+            <span class="text-muted">&copy; 2026 - Samar Stone Qwen - Marble Import & Trading</span>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

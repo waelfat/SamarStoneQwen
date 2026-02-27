@@ -1,0 +1,222 @@
+﻿<!-- Views/PurchaseOrders/Details.cshtml (Fixed) -->
+@model PurchaseOrder
+@{
+    ViewData["Title"] = "Purchase Order Details";
+}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="fas fa-file-invoice me-2"></i>Purchase Order Details</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-info-circle me-2"></i>Order Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-4"><strong>Order Number:</strong></div>
+                    <div class="col-sm-8"><code>@Model.OrderNumber</code></div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-sm-4"><strong>Supplier:</strong></div>
+                    <div class="col-sm-8">@Model.Supplier.Name</div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-sm-4"><strong>Contact Person:</strong></div>
+                    <div class="col-sm-8">@Model.Supplier.ContactPerson</div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-sm-4"><strong>Order Date:</strong></div>
+                    <div class="col-sm-8">@Model.OrderDate.ToString("dd/MM/yyyy")</div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-sm-4"><strong>Expected Delivery:</strong></div>
+                    <div class="col-sm-8">@Model.ExpectedDeliveryDate.ToString("dd/MM/yyyy")</div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-sm-4"><strong>Status:</strong></div>
+                    <div class="col-sm-8">
+                        <span class="badge @(Model.Status == "Paid" || Model.Status == "Delivered" ? "bg-success" : 
+                              Model.Status == "PartiallyPaid" ? "bg-warning" : "bg-info")">
+                            <i class="fas @(Model.Status == "Paid" || Model.Status == "Delivered" ? "fa-check-circle" : 
+                                  Model.Status == "PartiallyPaid" ? "fa-clock" : "fa-hourglass-half") me-1"></i>
+                            @Model.Status
+                        </span>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-sm-4"><strong>Notes:</strong></div>
+                    <div class="col-sm-8">@Model.Notes</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-calculator me-2"></i>Financial Summary</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-2">
+                    <div class="d-flex justify-content-between">
+                        <span>Total Amount:</span>
+                        <strong>$@Model.TotalAmountUSD.ToString("N2")</strong>
+                    </div>
+                </div>
+                <div class="mb-2">
+                    <div class="d-flex justify-content-between">
+                        <span>Paid Amount:</span>
+                        <strong>$@Model.PaidAmountUSD.ToString("N2")</strong>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between">
+                        <span>Remaining:</span>
+                        <strong class="text-danger">$@(Model.TotalAmountUSD - Model.PaidAmountUSD).ToString("N2")</strong>
+                    </div>
+                </div>
+                <div class="progress mb-2" style="height: 10px;">
+                    @{
+                        var paymentPercentage = Model.TotalAmountUSD > 0 ? (Model.PaidAmountUSD / Model.TotalAmountUSD * 100) : 0;
+                    }
+                    <div class="progress-bar" role="progressbar" 
+                         style="width: @(paymentPercentage.ToString("N2"))%" 
+                         aria-valuenow="@(paymentPercentage)" 
+                         aria-valuemin="0" aria-valuemax="100">
+                    </div>
+                </div>
+                <small class="text-muted">Payment Progress</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header">
+        <h5><i class="fas fa-boxes me-2"></i>Containers</h5>
+    </div>
+    <div class="card-body">
+        @if (Model.Containers.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Container #</th>
+                            <th>Size (ft)</th>
+                            <th>Weight (tons)</th>
+                            <th>Status</th>
+                            <th>Arrival Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var container in Model.Containers)
+                        {
+                            <tr>
+                                <td>@container.ContainerNumber</td>
+                                <td>@container.SizeInFeet ft</td>
+                                <td>@container.WeightInTons tons</td>
+                                <td>
+                                    <span class="badge @(container.Status == "Delivered" || container.Status == "Unloaded" ? "bg-success" : 
+                                          container.Status == "Arrived" ? "bg-warning" : "bg-info")">
+                                        @container.Status
+                                    </span>
+                                </td>
+                                <td>
+                                    @if (container.ArrivalDate.HasValue)
+                                    {
+                                        @container.ArrivalDate.Value.ToString("dd/MM/yyyy")
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
+                                <td>
+                                    <a asp-controller="Containers" asp-action="Details" asp-route-id="@container.Id" class="btn btn-sm btn-outline-info">
+                                        <i class="fas fa-eye"></i> Details
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center">
+                <i class="fas fa-box-open fa-3x text-muted mb-2"></i>
+                <p class="text-muted">No containers associated with this purchase order.</p>
+                <a asp-controller="Containers" asp-action="Create"  asp-route-id="@Model.Id" class="btn btn-primary">
+                    <i class="fas fa-plus me-1"></i> Add Container
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header">
+        <h5><i class="fas fa-credit-card me-2"></i>Payments</h5>
+    </div>
+    <div class="card-body">
+        @if (Model.Payments.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Amount (USD)</th>
+                            <th>Method</th>
+                            <th>Transaction Ref</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var payment in Model.Payments)
+                        {
+                            <tr>
+                                <td>@payment.PaymentDate.ToString("dd/MM/yyyy")</td>
+                                <td>$@payment.AmountUSD.ToString("N2")</td>
+                                <td>@payment.PaymentMethod</td>
+                                <td>@payment.TransactionReference</td>
+                                <td>@payment.Description</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center">
+                <i class="fas fa-money-bill-wave fa-3x text-muted mb-2"></i>
+                <p class="text-muted">No payments recorded for this purchase order.</p>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header">
+        <h5><i class="fas fa-tasks me-2"></i>Actions</h5>
+    </div>
+    <div class="card-body">
+        <div class="d-grid gap-2">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
+                <i class="fas fa-edit me-1"></i> Edit Purchase Order
+            </a>
+            <a asp-controller="Containers" asp-action="Create"  asp-route-id="@Model.Id" class="btn btn-info">
+                <i class="fas fa-box me-1"></i> Add Container
+            </a>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
