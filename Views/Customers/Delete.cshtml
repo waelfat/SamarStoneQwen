@@ -1,0 +1,107 @@
+﻿<!-- Views/Customers/Delete.cshtml -->
+@model DeleteCustomerViewModel
+@{
+    ViewData["Title"] = "Deactivate Customer";
+}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="fas fa-trash me-2"></i>Deactivate Customer</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <h5><i class="fas fa-exclamation-triangle me-2"></i>Confirm Deactivation</h5>
+            </div>
+            <div class="card-body">
+                <h4 class="text-danger">Are you sure you want to deactivate this customer?</h4>
+                <p>This action will mark the customer as inactive. The customer will not appear in sales forms, but existing sales will remain linked to this customer.</p>
+                
+                <div class="alert alert-warning">
+                    <h6><i class="fas fa-info-circle me-2"></i>Important Information</h6>
+                    <ul class="mb-0">
+                        <li>This is a soft delete - the customer record will remain in the database</li>
+                        <li>All existing sales will continue to reference this customer</li>
+                        <li>The customer will no longer be available for new sales orders</li>
+                        <li>You can reactivate the customer later if needed</li>
+                    </ul>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-4"><strong>Customer Name:</strong></div>
+                    <div class="col-sm-8">@Model.Name</div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-sm-4"><strong>Email:</strong></div>
+                    <div class="col-sm-8">@Model.Email</div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-sm-4"><strong>Phone:</strong></div>
+                    <div class="col-sm-8">@Model.Phone</div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-sm-4"><strong>Address:</strong></div>
+                    <div class="col-sm-8">@Model.Address</div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-sm-4"><strong>City, Country:</strong></div>
+                    <div class="col-sm-8">@Model.City, @Model.Country</div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-sm-4"><strong>Current Status:</strong></div>
+                    <div class="col-sm-8">
+                        <span class="badge @(Model.IsActive ? "bg-success" : "bg-danger")">
+                            <i class="fas @(Model.IsActive ? "fa-check-circle" : "fa-times-circle") me-1"></i>
+                            @(Model.IsActive ? "Active" : "Inactive")
+                        </span>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-sm-4"><strong>Related Sales:</strong></div>
+                    <div class="col-sm-8">
+                        <span class="badge bg-info">@Model.RelatedSalesCount sales</span>
+                    </div>
+                </div>
+
+                <form asp-action="Delete" method="post" class="mt-4">
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="Name" />
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash me-1"></i> Confirm Deactivation
+                        </button>
+                        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-history me-2"></i>Customer History</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <strong>Related Sales:</strong> <span class="badge bg-info">@Model.RelatedSalesCount</span>
+                </div>
+                <div class="alert alert-info">
+                    <h6><i class="fas fa-info-circle me-2"></i>What Happens Next</h6>
+                    <ul class="mb-0">
+                        <li>Customer becomes inactive in selection lists</li>
+                        <li>Existing sales remain intact</li>
+                        <li>Financial records are preserved</li>
+                        <li>Can be reactivated anytime</li>
+                    </ul>
+                </div>
+                <div class="alert alert-warning">
+                    <h6><i class="fas fa-exclamation-triangle me-2"></i>Before Proceeding</h6>
+                    <p class="mb-0">Consider if you want to complete any pending sales before deactivating this customer.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

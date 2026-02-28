@@ -1,11 +1,14 @@
-// Controllers/CustomersController.cs
+// Controllers/CustomersController.cs (Updated with ViewModels)
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SamarStoneQwen.Data;
 using SamarStoneQwen.Models;
+using SamarStoneQwen.ViewModels.Customers;
 
 namespace SamarStoneQwen.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class CustomersController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -23,22 +26,36 @@ namespace SamarStoneQwen.Controllers
 
         public IActionResult Create()
         {
-            return View();
+            return View(new CreateCustomerViewModel());
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Customer customer)
+        public async Task<IActionResult> Create(CreateCustomerViewModel model)
         {
             if (ModelState.IsValid)
             {
-                customer.Id = Guid.NewGuid().ToString();
-                customer.CreatedDate = DateTime.Now;
+                var customer = new Customer
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = model.Name,
+                    Email = model.Email,
+                    Phone = model.Phone,
+                    TaxNumber = model.TaxNumber,
+                    Address = model.Address,
+                    City = model.City,
+                    Country = model.Country,
+                    Notes = model.Notes,
+                    IsActive = model.IsActive,
+                    CreatedDate = DateTime.Now
+                };
+
                 _context.Add(customer);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Customer created successfully!";
                 return RedirectToAction(nameof(Index));
             }
-            return View(customer);
+            return View(model);
         }
 
         public async Task<IActionResult> Edit(string id)
@@ -48,32 +65,60 @@ namespace SamarStoneQwen.Controllers
             var customer = await _context.Customers.FindAsync(id);
             if (customer == null) return NotFound();
             
-            return View(customer);
+            var model = new EditCustomerViewModel
+            {
+                Id = customer.Id,
+                Name = customer.Name,
+                Email = customer.Email,
+                Phone = customer.Phone,
+                TaxNumber = customer.TaxNumber,
+                Address = customer.Address,
+                City = customer.City,
+                Country = customer.Country,
+                Notes = customer.Notes,
+                IsActive = customer.IsActive
+            };
+            
+            return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, Customer customer)
+        public async Task<IActionResult> Edit(string id, EditCustomerViewModel model)
         {
-            if (id != customer.Id) return NotFound();
+            if (id != model.Id) return NotFound();
 
             if (ModelState.IsValid)
             {
                 try
                 {
+                    var customer = await _context.Customers.FindAsync(id);
+                    if (customer == null) return NotFound();
+
+                    customer.Name = model.Name;
+                    customer.Email = model.Email;
+                    customer.Phone = model.Phone;
+                    customer.TaxNumber = model.TaxNumber;
+                    customer.Address = model.Address;
+                    customer.City = model.City;
+                    customer.Country = model.Country;
+                    customer.Notes = model.Notes;
+                    customer.IsActive = model.IsActive;
+
                     _context.Update(customer);
                     await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "Customer updated successfully!";
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CustomerExists(customer.Id))
+                    if (!CustomerExists(model.Id))
                         return NotFound();
                     else
                         throw;
                 }
-                return RedirectToAction(nameof(Index));
             }
-            return View(customer);
+            return View(model);
         }
 
         public async Task<IActionResult> Details(string id)
@@ -96,8 +141,21 @@ namespace SamarStoneQwen.Controllers
             
             var customer = await _context.Customers.FindAsync(id);
             if (customer == null) return NotFound();
+
+            var model = new DeleteCustomerViewModel
+            {
+                Id = customer.Id,
+                Name = customer.Name,
+                Email = customer.Email,
+                Phone = customer.Phone,
+                Address = customer.Address,
+                City = customer.City,
+                Country = customer.Country,
+                IsActive = customer.IsActive,
+                RelatedSalesCount = await _context.Sales.CountAsync(s => s.CustomerId == id)
+            };
             
-            return View(customer);
+            return View(model);
         }
 
         [HttpPost, ActionName("Delete")]
@@ -107,9 +165,11 @@ namespace SamarStoneQwen.Controllers
             var customer = await _context.Customers.FindAsync(id);
             if (customer != null)
             {
-                customer.IsActive = false; // Soft delete
+                // Instead of hard delete, mark as inactive
+                customer.IsActive = false;
                 _context.Update(customer);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Customer deactivated successfully!";
             }
             return RedirectToAction(nameof(Index));
         }

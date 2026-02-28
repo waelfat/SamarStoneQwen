@@ -22,7 +22,7 @@
                         <div class="col-md-6">
                             <div class="form-group mb-3">
                                 <label asp-for="CustomerId" class="form-label"><i class="fas fa-user me-1"></i>Customer</label>
-                                <select asp-for="CustomerId" class="form-control" asp-items="@(new SelectList(Model.AvailableCustomers, "Id", "Name"))" required>
+                                <select asp-for="CustomerId" class="form-select" asp-items="@(new SelectList(Model.AvailableCustomers, "Id", "Name"))" required>
                                     <option value="">-- Select Customer --</option>
                                 </select>
                                 <span asp-validation-for="CustomerId" class="text-danger"></span>
@@ -44,7 +44,7 @@
                                         <div class="row">
                                             <div class="col-md-3">
                                                 <label class="form-label">Marble Type</label>
-                                                <select name="SaleItems[@i].MarbleTypeId" class="form-control marble-type-select" required>
+                                                <select name="SaleItems[@i].MarbleTypeId" class="form-select marble-type-select" required>
                                                     <option value="">-- Select Type --</option>
                                                     @foreach (var type in Model.AvailableMarbleTypes)
                                                     {
@@ -54,27 +54,27 @@
                                                 <span class="text-danger field-validation-valid" data-valmsg-for="SaleItems[@i].MarbleTypeId" data-valmsg-replace="true"></span>
                                             </div>
                                             <div class="col-md-2">
-                                                <label class="form-label">Width (cm)</label>
+                                                <label class="form-label text-nowrap">Width (cm)</label>
                                                 <input type="number" name="SaleItems[@i].Width" class="form-control dimension-input" step="0.1" min="0" placeholder="120" value="@(Model.SaleItems[i].Width)" required />
                                                 <span class="text-danger field-validation-valid" data-valmsg-for="SaleItems[@i].Width" data-valmsg-replace="true"></span>
                                             </div>
                                             <div class="col-md-2">
-                                                <label class="form-label">Length (cm)</label>
+                                                <label class="form-label text-nowrap">Length (cm)</label>
                                                 <input type="number" name="SaleItems[@i].Length" class="form-control dimension-input" step="0.1" min="0" placeholder="240" value="@(Model.SaleItems[i].Length)" required />
                                                 <span class="text-danger field-validation-valid" data-valmsg-for="SaleItems[@i].Length" data-valmsg-replace="true"></span>
                                             </div>
                                             <div class="col-md-2">
-                                                <label class="form-label">Thickness (cm)</label>
+                                                <label class="form-label text-nowrap">Thickness (cm)</label>
                                                 <input type="number" name="SaleItems[@i].Thickness" class="form-control dimension-input" step="0.1" min="0" placeholder="2.0" value="@(Model.SaleItems[i].Thickness)" required />
                                                 <span class="text-danger field-validation-valid" data-valmsg-for="SaleItems[@i].Thickness" data-valmsg-replace="true"></span>
                                             </div>
-                                            <div class="col-md-1">
-                                                <label class="form-label">Quantity</label>
+                                            <div class="col-md-2">
+                                                <label class="form-label  text-nowrap">Quantity</label>
                                                 <input type="number" name="SaleItems[@i].Quantity" class="form-control quantity-input" step="1" min="1" placeholder="1" value="@(Model.SaleItems[i].Quantity)" required />
                                                 <span class="text-danger field-validation-valid" data-valmsg-for="SaleItems[@i].Quantity" data-valmsg-replace="true"></span>
                                             </div>
                                             <div class="col-md-2">
-                                                <label class="form-label">Unit Price (EGP)</label>
+                                                <label class="form-label text-nowrap">Unit Price (EGP)</label>
                                                 <input type="number" name="SaleItems[@i].UnitPrice" class="form-control price-input" step="0.01" min="0" placeholder="5000" value="@(Model.SaleItems[i].UnitPrice)" required />
                                                 <span class="text-danger field-validation-valid" data-valmsg-for="SaleItems[@i].UnitPrice" data-valmsg-replace="true"></span>
                                             </div>
@@ -129,7 +129,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-4 d-none d-md-block">
         <div class="card">
             <div class="card-header">
                 <h5><i class="fas fa-info-circle me-2"></i>Instructions</h5>
@@ -213,7 +213,7 @@
                 <div class="row">
                     <div class="col-md-3">
                         <label class="form-label">Marble Type</label>
-                        <select name="SaleItems[\${itemIndex}].MarbleTypeId" class="form-control marble-type-select" required>
+                        <select name="SaleItems[\${itemIndex}].MarbleTypeId" class="form-select marble-type-select" required>
                             <option value="">-- Select Type --</option>
                             @foreach (var type in Model.AvailableMarbleTypes)
                             {

@@ -1,4 +1,4 @@
-// Controllers/SalesController.cs (Updated with improved approach)
+// Controllers/SalesController.cs (Updated Details method)
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -163,6 +163,69 @@ namespace SamarStoneQwen.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public async Task<IActionResult> Details(string id)
+        {
+            if (id == null) return NotFound();
+            
+            var sale = await _context.Sales
+                .Include(s => s.Customer)
+                .Include(s => s.SaleItems)
+                .ThenInclude(si => si.Slab)
+                .ThenInclude(s => s.MarbleTypeNavigation)
+                .FirstOrDefaultAsync(m => m.Id == id);
+                
+            if (sale == null) return NotFound();
+            
+            // Map to ViewModel
+            var viewModel = new SaleDetailsViewModel
+            {
+                Id = sale.Id,
+                CustomerId = sale.CustomerId,
+                CustomerName = sale.Customer.Name,
+                SaleDate = sale.SaleDate,
+                CreatedDate = sale.CreatedDate,
+                Notes = sale.Notes
+            };
+
+            // Calculate financial summary
+            decimal totalRevenue = 0;
+            decimal totalCost = 0;
+            
+            foreach (var item in sale.SaleItems)
+            {
+                var cost = item.AreaSold * item.CostPerSqM * 15.7m; // USD to EGP conversion
+                var profit = item.SellingPriceEGP - cost;
+                var profitMargin = item.SellingPriceEGP > 0 ? (profit / item.SellingPriceEGP * 100) : 0;
+                
+                totalRevenue += item.SellingPriceEGP;
+                totalCost += cost;
+                
+                viewModel.SaleItems.Add(new SaleItemDetailViewModel
+                {
+                    Id = item.Id,
+                    SlabId = item.SlabId,
+                    SlabNumber = item.Slab.SlabNumber,
+                    MarbleTypeName = item.Slab.MarbleTypeNavigation.Name,
+                    Width = item.Slab.Width,
+                    Length = item.Slab.Length,
+                    Thickness = item.Slab.Thickness,
+                    AreaSold = item.AreaSold,
+                    CostPerSqM = item.CostPerSqM,
+                    SellingPriceEGP = item.SellingPriceEGP,
+                    Cost = cost,
+                    Profit = profit,
+                    ProfitMargin = profitMargin
+                });
+            }
+            
+            viewModel.TotalRevenue = totalRevenue;
+            viewModel.TotalCost = totalCost;
+            viewModel.TotalProfit = totalRevenue - totalCost;
+            viewModel.ProfitMargin = totalRevenue > 0 ? (viewModel.TotalProfit / totalRevenue * 100) : 0;
+
+            return View(viewModel);
+        }
+
         // Method to find matching slabs using FIFO
         private async Task<List<Slab>> FindMatchingSlabsFIFO(string marbleTypeId, decimal minWidth, decimal minLength, 
             decimal minThickness, int quantity)
@@ -197,7 +260,6 @@ namespace SamarStoneQwen.Controllers
             if (ModelState.ErrorCount > 0)
             {
                 // Get the current items from the form values
-                // This requires manual binding since the model is complex
                 var customer = Request.Form["CustomerId"].FirstOrDefault();
                 viewModel.CustomerId = customer ?? "";
 
@@ -236,23 +298,7 @@ namespace SamarStoneQwen.Controllers
                 viewModel.SaleItems.Add(new SaleItemViewModel());
             }
             
-            return View(viewModel);
-        }
-
-        public async Task<IActionResult> Details(string id)
-        {
-            if (id == null) return NotFound();
-            
-            var sale = await _context.Sales
-                .Include(s => s.Customer)
-                .Include(s => s.SaleItems)
-                .ThenInclude(si => si.Slab)
-                .ThenInclude(s => s.MarbleTypeNavigation)
-                .FirstOrDefaultAsync(m => m.Id == id);
-                
-            if (sale == null) return NotFound();
-            
-            return View(sale);
+            return View("Create", viewModel);
         }
     }
 }

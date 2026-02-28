@@ -22,7 +22,7 @@
                         <div class="col-md-6">
                             <div class="form-group mb-3">
                                 <label asp-for="PurchaseOrderId" class="form-label"><i class="fas fa-file-invoice me-1"></i>Purchase Order</label>
-                                <select asp-for="PurchaseOrderId" class="form-control"  required>
+                                <select asp-for="PurchaseOrderId" class="form-select"  required>
                                     <option value="">-- Select Purchase Order --</option>
                                     @foreach (var po in ViewBag.PurchaseOrders)
                                     {
@@ -45,7 +45,7 @@
                         <div class="col-md-6">
                             <div class="form-group mb-3">
                                 <label asp-for="SizeInFeet" class="form-label"><i class="fas fa-ruler-combined me-1"></i>Container Size (ft)</label>
-                                <select asp-for="SizeInFeet" class="form-control" required>
+                                <select asp-for="SizeInFeet" class="form-select" required>
                                     <option value="">-- Select Size --</option>
                                     <option value="20">20 ft</option>
                                     <option value="40">40 ft</option>
@@ -67,7 +67,7 @@
                         <div class="col-md-6">
                             <div class="form-group mb-3">
                                 <label asp-for="Status" class="form-label"><i class="fas fa-flag me-1"></i>Status</label>
-                                <select asp-for="Status" class="form-control" required>
+                                <select asp-for="Status" class="form-select" required>
                                     <option value="Ordered">Ordered</option>
                                     <option value="Shipped">Shipped</option>
                                     <option value="Arrived">Arrived</option>
