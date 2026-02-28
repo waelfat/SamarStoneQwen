@@ -119,14 +119,14 @@ namespace SamarStoneQwen.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> UploadSlabFile(string containerId)
+        public async Task<IActionResult> UploadSlabFile(string Id)
         {
-            if (containerId == null) return NotFound();
+            if (Id == null) return NotFound();
             
             var container = await _context.Containers
                 .Include(c => c.PurchaseOrder)
                 .ThenInclude(po => po.Supplier)
-                .FirstOrDefaultAsync(c => c.Id == containerId);
+                .FirstOrDefaultAsync(c => c.Id == Id);
             if (container == null) return NotFound();
             
             ViewBag.Container = container;
