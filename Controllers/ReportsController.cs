@@ -23,8 +23,8 @@ namespace SamarStoneQwen.Controllers
                 AvailableSlabs = await _context.Slabs.CountAsync(s => s.Status == "Available"),
                 ReservedSlabs = await _context.Slabs.CountAsync(s => s.Status == "Reserved"),
                 SoldSlabs = await _context.Slabs.CountAsync(s => s.Status == "Sold"),
-                TotalArea = await _context.Slabs.SumAsync(s => s.Area),
-                TotalValueUSD = await _context.Slabs.SumAsync(s => s.TotalCost)
+                TotalArea = await _context.Slabs.SumAsync(s => (s.Width * s.Length) / 10000),
+                TotalValueUSD = await _context.Slabs.SumAsync(s => ((s.Width * s.Length) / 10000) * s.CostPerSqM)
             };
 
             var marbleTypes = await _context.Slabs
@@ -33,8 +33,8 @@ namespace SamarStoneQwen.Controllers
                 {
                     Type = g.Key,
                     Count = g.Count(),
-                    TotalArea = g.Sum(s => s.Area),
-                    TotalValue = g.Sum(s => s.TotalCost),
+                    TotalArea = g.Sum((s => (s.Width * s.Length) / 10000)),//(s => (s.Width * s.Length) / 10000)
+                    TotalValue = g.Sum(s =>((s.Width * s.Length) / 10000)*s.CostPerSqM) ,
                     Available = g.Count(s => s.Status == "Available"),
                     Sold = g.Count(s => s.Status == "Sold")
                 })

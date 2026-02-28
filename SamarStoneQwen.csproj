@@ -20,6 +20,10 @@
   <ItemGroup>
     <Folder Include="Data\" />
     <Folder Include="Services\" />
+    <Folder Include="ViewModels\" />
+    <Folder Include="ViewModels\Account\" />
+    <Folder Include="ViewModels\UserManagement\" />
+    <Folder Include="Views\Account\" />
     <Folder Include="Views\Containers\" />
     <Folder Include="Views\Customers\" />
     <Folder Include="Views\MarbleTypes\" />
@@ -28,6 +32,7 @@
     <Folder Include="Views\Sales\" />
     <Folder Include="Views\Slabs\" />
     <Folder Include="Views\Suppliers\" />
+    <Folder Include="Views\UserManagement\" />
   </ItemGroup>
 
 </Project>

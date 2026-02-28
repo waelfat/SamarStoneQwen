@@ -11,8 +11,8 @@ using SamarStoneQwen.Data;
 namespace SamarStoneQwen.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260227143342_initialmigration")]
-    partial class initialmigration
+    [Migration("20260227231323_usermanagement")]
+    partial class usermanagement
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -223,6 +223,9 @@ namespace SamarStoneQwen.Migrations
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("TEXT");
+
+                    b.Property<bool>("MustChangePassword")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)

@@ -27,8 +27,11 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options=> options.Si
         options.Password.RequireNonAlphanumeric = false;
         options.Password.RequireUppercase = false;
         options.Password.RequireLowercase = false;
+        //default lookout timespan 30 m
+        options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
         // User settings
         options.User.RequireUniqueEmail = true;
+        options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+"; // Allow more characters in username
     });
     builder.Services.ConfigureApplicationCookie(options =>
     {
@@ -81,6 +84,58 @@ catch (Exception ex)
     var logger = app.Services.GetRequiredService<ILogger<Program>>();
     logger.LogError(ex, "An error occurred while seeding the database.");
 }
+
+// Seed the database and create roles
+try
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        await context.Database.EnsureCreatedAsync();
+        
+        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+        
+        // Create roles
+        var roles = new[] { "Admin", "Employee" };
+        foreach (var role in roles)
+        {
+            if (!await roleManager.RoleExistsAsync(role))
+            {
+                await roleManager.CreateAsync(new IdentityRole(role));
+            }
+        }
+        
+        // Create default admin user if doesn't exist
+        var adminUser = await userManager.FindByNameAsync("admin");
+        if (adminUser == null)
+        {
+            var admin = new ApplicationUser
+            {
+                UserName = "admin",
+                Email = "admin@samarstone.com",
+                FirstName = "Admin",
+                LastName = "User",
+                IsActive = true,
+                MustChangePassword = false,
+                CreatedDate = DateTime.Now
+            };
+            
+            var result = await userManager.CreateAsync(admin, "Admin123!");
+            if (result.Succeeded)
+            {
+                await userManager.AddToRoleAsync(admin, "Admin");
+            }
+        }
+    }
+}
+catch (Exception ex)
+{
+    // Log the error but don't crash the application
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogError(ex, "An error occurred while seeding the database.");
+}
+
 
 
 app.MapControllerRoute(

@@ -1,11 +1,12 @@
 // Controllers/SalesController.cs (Fixed)
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SamarStoneQwen.Data;
 using SamarStoneQwen.Models;
 
-namespace SamarStoneQwen.Controllers
-{
+namespace SamarStoneQwen.Controllers;
+[Authorize]
     public class SalesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -25,7 +26,7 @@ namespace SamarStoneQwen.Controllers
                 .ToListAsync();
             return View(sales);
         }
-
+[Authorize (Roles = "Admin,Employee")]
         public async Task<IActionResult> Create()
         {
             ViewBag.Customers = await _context.Customers.Where(c => c.IsActive).ToListAsync();
@@ -45,6 +46,7 @@ namespace SamarStoneQwen.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize (Roles = "Admin,Employee")]
         public async Task<IActionResult> Create([Bind("CustomerId")] Sale sale, 
             List<string> marbleTypes, List<decimal> widths, List<decimal> lengths, 
             List<decimal> thicknesses, List<int> quantities, List<decimal> unitPrices)
@@ -197,4 +199,3 @@ namespace SamarStoneQwen.Controllers
             return View(sale);
         }
     }
-}

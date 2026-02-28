@@ -1,0 +1,178 @@
+﻿<!-- Views/UserManagement/Create.cshtml -->
+@model CreateUserViewModel
+@{
+    ViewData["Title"] = "Create User";
+}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="fas fa-user-plus me-2"></i>Create User</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-user me-2"></i>User Information</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" method="post" id="createUserForm">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="Username" class="form-label"><i class="fas fa-user me-1"></i>Username</label>
+                                <input asp-for="Username" class="form-control" placeholder="Enter username" required />
+                                <span asp-validation-for="Username" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="Email" class="form-label"><i class="fas fa-envelope me-1"></i>Email</label>
+                                <input asp-for="Email" type="email" class="form-control" placeholder="Enter email address" required />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="FirstName" class="form-label"><i class="fas fa-signature me-1"></i>First Name</label>
+                                <input asp-for="FirstName" class="form-control" placeholder="Enter first name" />
+                                <span asp-validation-for="FirstName" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="LastName" class="form-label"><i class="fas fa-signature me-1"></i>Last Name</label>
+                                <input asp-for="LastName" class="form-control" placeholder="Enter last name" />
+                                <span asp-validation-for="LastName" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="Password" class="form-label"><i class="fas fa-lock me-1"></i>Password</label>
+                                <input asp-for="Password" type="password" class="form-control" placeholder="Enter password" id="password" required />
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="ConfirmPassword" class="form-label"><i class="fas fa-lock me-1"></i>Confirm Password</label>
+                                <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Confirm password" id="confirmPassword" required />
+                                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="Role" class="form-label"><i class="fas fa-user-tag me-1"></i>User Role</label>
+                                <select asp-for="Role" class="form-control" required>
+                                    <option value="">-- Select Role --</option>
+                                    <option value="Employee">Employee</option>
+                                    <option value="Admin">Admin</option>
+                                </select>
+                                <span asp-validation-for="Role" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="MustChangePassword" class="form-label"><i class="fas fa-key me-1"></i>Password Policy</label>
+                                <select asp-for="MustChangePassword" class="form-control" required>
+                                    <option value="true">User must change password</option>
+                                    <option value="false">User can keep current password</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <div class="form-check">
+                            <input asp-for="IsActive" class="form-check-input" type="checkbox" checked>
+                            <label asp-for="IsActive" class="form-check-label">Active User</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary" id="submitBtn">
+                            <i class="fas fa-save me-1"></i> Create User
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i> Back to List
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-info-circle me-2"></i>Help</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">
+                    <i class="fas fa-lightbulb me-2 text-warning"></i>
+                    Create a new user account. Select the appropriate role for the user.
+                </p>
+                <div class="alert alert-info">
+                    <h6><i class="fas fa-user-tag me-2"></i>Role Information</h6>
+                    <ul class="mb-0">
+                        <li><strong>Employee:</strong> Limited access to sales functions</li>
+                        <li><strong>Admin:</strong> Full access to all system functions</li>
+                    </ul>
+                </div>
+                <div class="alert alert-warning">
+                    <h6><i class="fas fa-shield-alt me-2"></i>Security Tips</h6>
+                    <ul class="mb-0">
+                        <li>Password must be at least 6 characters</li>
+                        <li>Enable "Must Change Password" for new users</li>
+                        <li>Assign roles based on job responsibilities</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        const createUserForm = document.getElementById('createUserForm');
+        const submitBtn = document.getElementById('submitBtn');
+
+        function validatePasswords() {
+            const password = passwordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+            
+            if (password !== confirmPassword) {
+                return false;
+            }
+            return true;
+        }
+
+        // Validate on form submit
+        createUserForm.addEventListener('submit', function(e) {
+            if (!validatePasswords()) {
+                e.preventDefault();
+                alert('Passwords do not match!');
+                return false;
+            }
+            
+            // Disable submit button to prevent double submission
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Creating...';
+        });
+    });
+</script>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

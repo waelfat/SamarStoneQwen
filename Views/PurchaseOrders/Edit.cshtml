@@ -136,7 +136,7 @@
                     <h6><i class="fas fa-coins me-2"></i>Payment Summary</h6>
                     <p class="mb-1">Total: <strong>$@Model.TotalAmountUSD.ToString("N2")</strong></p>
                     <p class="mb-1">Paid: <strong>$@Model.PaidAmountUSD.ToString("N2")</strong></p>
-                    <p class="mb-0">Remaining: <strong>$@(Model.TotalAmountUSD - Model.PaidAmountUSD).ToString("N2")</strong></p>
+                    <p class="mb-0">Remaining: <strong>$@((Model.TotalAmountUSD - Model.PaidAmountUSD).ToString("N2"))</strong></p>
                 </div>
             </div>
         </div>
