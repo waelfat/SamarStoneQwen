@@ -22,6 +22,8 @@
     <Folder Include="Services\" />
     <Folder Include="ViewModels\" />
     <Folder Include="ViewModels\Account\" />
+    <Folder Include="ViewModels\PurchaseOrders\" />
+    <Folder Include="ViewModels\Sales\" />
     <Folder Include="ViewModels\UserManagement\" />
     <Folder Include="Views\Account\" />
     <Folder Include="Views\Containers\" />

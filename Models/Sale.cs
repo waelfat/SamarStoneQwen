@@ -10,7 +10,7 @@ namespace SamarStoneQwen.Models
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         
         // Navigation properties
-        public  Customer Customer { get; set; } = new Customer();
-        public  ICollection<SaleItem> SaleItems { get; set; } = new List<SaleItem>();
+        public  Customer Customer { get; set; } 
+        public  ICollection<SaleItem> SaleItems { get; set; } =new List<SaleItem>();
     }
 }

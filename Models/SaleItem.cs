@@ -13,7 +13,7 @@ namespace SamarStoneQwen.Models
         public string Notes { get; set; } = string.Empty;
         
         // Navigation properties
-        public  Sale Sale { get; set; } = new Sale();
-        public  Slab Slab { get; set; } = new Slab();
+        public  Sale Sale { get; set; } 
+        public  Slab Slab { get; set; } 
     }
 }

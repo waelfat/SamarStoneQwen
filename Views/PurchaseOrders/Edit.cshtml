@@ -1,5 +1,5 @@
-﻿<!-- Views/PurchaseOrders/Edit.cshtml (Fixed) -->
-@model PurchaseOrder
+﻿<!-- Views/PurchaseOrders/Edit.cshtml (Updated without PaidAmount) -->
+@model CreatePurchaseOrderViewModel
 @{
     ViewData["Title"] = "Edit Purchase Order";
 }
@@ -16,9 +16,7 @@
             </div>
             <div class="card-body">
                 <form asp-action="Edit" method="post">
-                    <input type="hidden" asp-for="Id" />
-                    <input type="hidden" asp-for="OrderNumber" />
-                    <input type="hidden" asp-for="CreatedDate" />
+                    <input type="hidden" name="id" value="@ViewBag.Id" />
                     
                     <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
                     
@@ -26,7 +24,7 @@
                         <div class="col-md-6">
                             <div class="form-group mb-3">
                                 <label asp-for="SupplierId" class="form-label"><i class="fas fa-building me-1"></i>Supplier</label>
-                                <select asp-for="SupplierId" class="form-control" asp-items="@(new SelectList(ViewBag.Suppliers, "Id", "Name"))" required>
+                                <select asp-for="SupplierId" class="form-control" asp-items="@(new SelectList(Model.AvailableSuppliers, "Id", "Name"))" required>
                                     <option value="">-- Select Supplier --</option>
                                 </select>
                                 <span asp-validation-for="SupplierId" class="text-danger"></span>
@@ -51,21 +49,14 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group mb-3">
-                                <label asp-for="PaidAmountUSD" class="form-label"><i class="fas fa-credit-card me-1"></i>Paid Amount (USD)</label>
-                                <input asp-for="PaidAmountUSD" type="number" step="0.01" class="form-control" placeholder="0.00" />
-                                <span asp-validation-for="PaidAmountUSD" class="text-danger"></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
                                 <label asp-for="ExpectedDeliveryDate" class="form-label"><i class="fas fa-truck me-1"></i>Expected Delivery Date</label>
                                 <input asp-for="ExpectedDeliveryDate" type="date" class="form-control" required />
                                 <span asp-validation-for="ExpectedDeliveryDate" class="text-danger"></span>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="row">
                         <div class="col-md-6">
                             <div class="form-group mb-3">
                                 <label asp-for="Currency" class="form-label"><i class="fas fa-coins me-1"></i>Currency</label>
@@ -75,9 +66,6 @@
                                 <span asp-validation-for="Currency" class="text-danger"></span>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="row">
                         <div class="col-md-6">
                             <div class="form-group mb-3">
                                 <label asp-for="Status" class="form-label"><i class="fas fa-flag me-1"></i>Status</label>
@@ -88,12 +76,6 @@
                                     <option value="Delivered">Delivered</option>
                                 </select>
                                 <span asp-validation-for="Status" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <label class="form-label"><i class="fas fa-calculator me-1"></i>Remaining Amount</label>
-                                <input type="text" class="form-control" value="$@(Model.TotalAmountUSD - Model.PaidAmountUSD)" readonly />
                             </div>
                         </div>
                     </div>
@@ -119,24 +101,21 @@
     <div class="col-md-4">
         <div class="card">
             <div class="card-header">
-                <h5><i class="fas fa-info-circle me-2"></i>Order Information</h5>
+                <h5><i class="fas fa-info-circle me-2"></i>Help</h5>
             </div>
             <div class="card-body">
-                <div class="mb-3">
-                    <strong>Order Number:</strong> <code>@Model.OrderNumber</code>
-                </div>
-                <div class="mb-3">
-                    <strong>Created Date:</strong> @Model.CreatedDate.ToString("dd/MM/yyyy")
-                </div>
-                <div class="mb-3">
-                    <strong>Current Supplier:</strong> 
-                    <span class="badge bg-info">@Model.Supplier.Name</span>
-                </div>
+                <p class="text-muted">
+                    <i class="fas fa-lightbulb me-2 text-warning"></i>
+                    Update the purchase order details. Use the payments section to track payments.
+                </p>
                 <div class="alert alert-info">
-                    <h6><i class="fas fa-coins me-2"></i>Payment Summary</h6>
-                    <p class="mb-1">Total: <strong>$@Model.TotalAmountUSD.ToString("N2")</strong></p>
-                    <p class="mb-1">Paid: <strong>$@Model.PaidAmountUSD.ToString("N2")</strong></p>
-                    <p class="mb-0">Remaining: <strong>$@((Model.TotalAmountUSD - Model.PaidAmountUSD).ToString("N2"))</strong></p>
+                    <h6><i class="fas fa-calculator me-2"></i>Payment Tracking</h6>
+                    <ul class="mb-0">
+                        <li>Payment amounts are tracked via the payments section</li>
+                        <li>System calculates paid/remaining amounts automatically</li>
+                        <li>Use "Partially Paid" status until full payment</li>
+                        <li>Update status when fully paid</li>
+                    </ul>
                 </div>
             </div>
         </div>

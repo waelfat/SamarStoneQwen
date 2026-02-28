@@ -1,0 +1,150 @@
+﻿<!-- Views/Suppliers/Details.cshtml -->
+@model Supplier
+@{
+    ViewData["Title"] = "Supplier Details";
+}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="fas fa-building me-2"></i>Supplier Details</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-info-circle me-2"></i>Supplier Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-4"><strong>Company Name:</strong></div>
+                    <div class="col-sm-8">@Model.Name</div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-sm-4"><strong>Contact Person:</strong></div>
+                    <div class="col-sm-8">@Model.ContactPerson</div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-sm-4"><strong>Email:</strong></div>
+                    <div class="col-sm-8">@Model.Email</div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-sm-4"><strong>Phone:</strong></div>
+                    <div class="col-sm-8">@Model.Phone</div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-sm-4"><strong>Tax Number:</strong></div>
+                    <div class="col-sm-8">@Model.TaxNumber</div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-sm-4"><strong>Address:</strong></div>
+                    <div class="col-sm-8">@Model.Address</div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-sm-4"><strong>City:</strong></div>
+                    <div class="col-sm-8">@Model.City</div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-sm-4"><strong>Country:</strong></div>
+                    <div class="col-sm-8">@Model.Country</div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-sm-4"><strong>Status:</strong></div>
+                    <div class="col-sm-8">
+                        <span class="badge @(Model.IsActive ? "bg-success" : "bg-danger")">
+                            <i class="fas @(Model.IsActive ? "fa-check-circle" : "fa-times-circle") me-1"></i>
+                            @(Model.IsActive ? "Active" : "Inactive")
+                        </span>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-sm-4"><strong>Notes:</strong></div>
+                    <div class="col-sm-8">@Model.Notes</div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-sm-4"><strong>Created Date:</strong></div>
+                    <div class="col-sm-8">@Model.CreatedDate.ToString("dd/MM/yyyy")</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-tasks me-2"></i>Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
+                        <i class="fas fa-edit me-1"></i> Edit Supplier
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">
+                        <i class="fas fa-trash me-1"></i> Deactivate Supplier
+                    </a>
+                    <a asp-controller="PurchaseOrders" asp-action="Create" class="btn btn-info">
+                        <i class="fas fa-file-invoice me-1"></i> Create Purchase Order
+                    </a>
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header">
+        <h5><i class="fas fa-file-invoice me-2"></i>Purchase Orders</h5>
+    </div>
+    <div class="card-body">
+        @if (Model.PurchaseOrders.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Order Number</th>
+                            <th>Order Date</th>
+                            <th>Total (USD)</th>
+                            <th>Paid (USD)</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var order in Model.PurchaseOrders)
+                        {
+                            <tr>
+                                <td>@order.OrderNumber</td>
+                                <td>@order.OrderDate.ToString("dd/MM/yyyy")</td>
+                                <td>$@order.TotalAmountUSD.ToString("N2")</td>
+                                <td>$@order.PaidAmountUSD.ToString("N2")</td>
+                                <td>
+                                    <span class="badge @(order.Status == "Paid" || order.Status == "Delivered" ? "bg-success" : 
+                                          order.Status == "PartiallyPaid" ? "bg-warning" : "bg-info")">
+                                        @order.Status
+                                    </span>
+                                </td>
+                                <td>
+                                    <a asp-controller="PurchaseOrders" asp-action="Details" asp-route-id="@order.Id" class="btn btn-sm btn-outline-info">
+                                        <i class="fas fa-eye"></i> Details
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center">
+                <i class="fas fa-file-invoice fa-3x text-muted mb-2"></i>
+                <p class="text-muted">No purchase orders associated with this supplier.</p>
+                <a asp-controller="PurchaseOrders" asp-action="Create" class="btn btn-primary">
+                    <i class="fas fa-plus me-1"></i> Create Purchase Order
+                </a>
+            </div>
+        }
+    </div>
+</div>

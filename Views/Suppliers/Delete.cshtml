@@ -1,0 +1,114 @@
+﻿<!-- Views/Suppliers/Delete.cshtml -->
+@model Supplier
+@{
+    ViewData["Title"] = "Deactivate Supplier";
+}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="fas fa-trash me-2"></i>Deactivate Supplier</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <h5><i class="fas fa-exclamation-triangle me-2"></i>Confirm Deactivation</h5>
+            </div>
+            <div class="card-body">
+                <h4 class="text-danger">Are you sure you want to deactivate this supplier?</h4>
+                <p>This action will mark the supplier as inactive. The supplier will not appear in purchase order creation forms, but existing purchase orders will remain linked to this supplier.</p>
+                
+                <div class="alert alert-warning">
+                    <h6><i class="fas fa-info-circle me-2"></i>Important Information</h6>
+                    <ul class="mb-0">
+                        <li>This is a soft delete - the supplier record will remain in the database</li>
+                        <li>All existing purchase orders will continue to reference this supplier</li>
+                        <li>The supplier will no longer be available for new purchase orders</li>
+                        <li>You can reactivate the supplier later if needed</li>
+                    </ul>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-4"><strong>Company Name:</strong></div>
+                    <div class="col-sm-8">@Model.Name</div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-sm-4"><strong>Contact Person:</strong></div>
+                    <div class="col-sm-8">@Model.ContactPerson</div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-sm-4"><strong>Email:</strong></div>
+                    <div class="col-sm-8">@Model.Email</div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-sm-4"><strong>Phone:</strong></div>
+                    <div class="col-sm-8">@Model.Phone</div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-sm-4"><strong>Current Status:</strong></div>
+                    <div class="col-sm-8">
+                        <span class="badge @(Model.IsActive ? "bg-success" : "bg-danger")">
+                            <i class="fas @(Model.IsActive ? "fa-check-circle" : "fa-times-circle") me-1"></i>
+                            @(Model.IsActive ? "Active" : "Inactive")
+                        </span>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-sm-4"><strong>Purchase Orders:</strong></div>
+                    <div class="col-sm-8">@Model.PurchaseOrders.Count() orders</div>
+                </div>
+
+                <form asp-action="Delete" method="post" class="mt-4">
+                    <input type="hidden" asp-for="Id" />
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash me-1"></i> Confirm Deactivation
+                        </button>
+                        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-history me-2"></i>Supplier History</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <strong>Total Purchase Orders:</strong> <span class="badge bg-info">@Model.PurchaseOrders.Count()</span>
+                </div>
+                <div class="mb-3">
+                    <strong>Total Amount:</strong> 
+                    @{
+                        var totalAmount = Model.PurchaseOrders.Sum(po => po.TotalAmountUSD);
+                    }
+                    <span class="text-success">$@totalAmount.ToString("N2")</span>
+                </div>
+                <div class="mb-3">
+                    <strong>Total Paid:</strong> 
+                    @{
+                        var totalPaid = Model.PurchaseOrders.Sum(po => po.PaidAmountUSD);
+                    }
+                    <span class="text-success">$@totalPaid.ToString("N2")</span>
+                </div>
+                <div class="mb-3">
+                    <strong>Remaining Balance:</strong> 
+                    <span class="text-danger">$@(totalAmount - totalPaid).ToString("N2")</span>
+                </div>
+                <div class="alert alert-info">
+                    <h6><i class="fas fa-info-circle me-2"></i>What Happens Next</h6>
+                    <ul class="mb-0">
+                        <li>Supplier becomes inactive in selection lists</li>
+                        <li>Existing purchase orders remain intact</li>
+                        <li>Financial records are preserved</li>
+                        <li>Can be reactivated anytime</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

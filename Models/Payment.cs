@@ -13,6 +13,6 @@ namespace SamarStoneQwen.Models
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         
         // Navigation properties
-        public  PurchaseOrder PurchaseOrder { get; set; } = new PurchaseOrder();
+        public  PurchaseOrder PurchaseOrder { get; set; } 
     }
 }

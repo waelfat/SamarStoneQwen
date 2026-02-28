@@ -8,7 +8,7 @@ namespace SamarStoneQwen.Models
         public string OrderNumber { get; set; } = string.Empty; // Add this property
         public DateTime OrderDate { get; set; }
         public decimal TotalAmountUSD { get; set; }
-        public decimal PaidAmountUSD { get; set; }
+        public decimal PaidAmountUSD => Payments?.Sum(p => p.AmountUSD) ?? 0;
         public decimal RemainingAmountUSD => TotalAmountUSD - PaidAmountUSD;
         public string Currency { get; set; } = "USD";
         public string Status { get; set; } = "Pending";
@@ -17,7 +17,7 @@ namespace SamarStoneQwen.Models
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         
         // Navigation properties
-        public  Supplier Supplier { get; set; } = new Supplier();
+        public  Supplier Supplier { get; set; } 
         public  ICollection<Container> Containers { get; set; } = new List<Container>();
         public  ICollection<Payment> Payments { get; set; } = new List<Payment>();
     }

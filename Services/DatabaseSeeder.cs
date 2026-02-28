@@ -206,7 +206,7 @@ namespace SamarStoneQwen.Services
                     Supplier = suppliers[0], // Use the saved supplier ID
                     OrderDate = DateTime.Now.AddDays(-30),
                     TotalAmountUSD = 45000m,
-                    PaidAmountUSD = 30000m,
+            
                     Currency = "USD",
                     Status = "Delivered",
                     ExpectedDeliveryDate = DateTime.Now.AddDays(-15),
@@ -220,7 +220,7 @@ namespace SamarStoneQwen.Services
                     Supplier = suppliers[1], // Use the saved supplier ID
                     OrderDate = DateTime.Now.AddDays(-20),
                     TotalAmountUSD = 28000m,
-                    PaidAmountUSD = 28000m,
+                
                     Currency = "USD",
                     Status = "Paid",
                     ExpectedDeliveryDate = DateTime.Now.AddDays(-5),
@@ -234,7 +234,7 @@ namespace SamarStoneQwen.Services
                     Supplier = suppliers[2], // Use the saved supplier ID
                     OrderDate = DateTime.Now.AddDays(-10),
                     TotalAmountUSD = 35000m,
-                    PaidAmountUSD = 15000m,
+              
                     Currency = "USD",
                     Status = "PartiallyPaid",
                     ExpectedDeliveryDate = DateTime.Now.AddDays(10),
